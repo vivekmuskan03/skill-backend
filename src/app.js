@@ -24,7 +24,16 @@ const app = express();
 
 app.use(helmet());
 app.use(morgan('dev'));
-app.use(cors({ origin: process.env.FRONTEND_ORIGIN || 'http://localhost:5173', credentials: true }));
+
+// ✅ FINAL CORRECT CORS (dev + vercel prod)
+app.use(cors({
+  origin: [
+    "http://localhost:5173",
+    "https://skill-frontend-iota.vercel.app"
+  ],
+  credentials: true
+}));
+
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
@@ -36,6 +45,7 @@ app.get('/', (_req, res) => res.json({ ok: true, service: 'Student Profile Trace
 
 ensureUploadDirs();
 
+// Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/students', studentRoutes);
 app.use('/api/teachers', teacherRoutes);
@@ -51,5 +61,3 @@ app.use(notFound);
 app.use(errorHandler);
 
 export default app;
-
-

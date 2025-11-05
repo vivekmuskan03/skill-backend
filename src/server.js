@@ -12,9 +12,13 @@ const PORT = process.env.PORT || 5000;
 
 const server = http.createServer(app);
 
+// SOCKET CORS FIX ✅
 const io = new SocketIOServer(server, {
   cors: {
-    origin: process.env.FRONTEND_ORIGIN || 'http://localhost:5173',
+    origin: [
+      "http://localhost:5173",
+      "https://skill-frontend-iota.vercel.app"
+    ],
     credentials: true
   }
 });
@@ -28,7 +32,6 @@ io.on('connection', (socket) => {
 connectDb()
   .then(() => {
     server.listen(PORT, () => {
-      // eslint-disable-next-line no-console
       console.log(`Backend server listening on port ${PORT}`);
       try {
         const ok = isModelAvailable();
@@ -39,9 +42,7 @@ connectDb()
     });
   })
   .catch((err) => {
-    // eslint-disable-next-line no-console
     console.error('Failed to connect DB', err);
     process.exit(1);
   });
-
 
